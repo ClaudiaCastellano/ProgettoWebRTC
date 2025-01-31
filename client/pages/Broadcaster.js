@@ -1,0 +1,185 @@
+import 'react-native-gesture-handler';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  Alert,
+  TouchableOpacity
+} from "react-native";
+import { RTCView, mediaDevices, RTCPeerConnection, RTCSessionDescription } from "react-native-webrtc";
+import { socket } from "./signaling";
+import {broadcasterStyle} from "./styles";
+
+
+const BroadcasterPage = ({ route, navigation }) => {
+
+    const { streamId } = route.params;
+    const [stream, setStream] = useState(null);
+    const peerConnections = useRef({}); 
+    const [error, setError] = useState(null);
+    const [errorShown, setErrorShown] = useState(false); 
+    const [isFront, setIsFront] = useState(true); // Stato per la fotocamera
+    const localStream = useRef(null);
+    const [userCount, setUserCount] = useState(0);
+
+    useEffect(() => {
+        if (error && !errorShown) {
+            // Mostra l'alert solo se l'errore non è stato ancora mostrato
+            Alert.alert("Errore", error, [{ text: "OK", onPress: () => {
+                setError(null);
+                setErrorShown(true);  // Imposta flag a true dopo aver mostrato l'alert
+                navigation.navigate("Home");
+            }}]);
+        }
+    }, [error, errorShown]);
+
+    const getStream = async (facing) => {
+        try {
+            const localStream = await mediaDevices.getUserMedia({
+                video: { facingMode: facing ? "user" : "environment" },
+                audio: true
+            });
+
+            return localStream;
+        } catch (error) {
+            console.error("Errore nell'acquisizione del flusso:", error);
+            Alert.alert("Errore", "Impossibile accedere alla fotocamera.");
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        
+        const startBroadcast = async () => {
+            console.log("Sono il broadcaster dello stream:", streamId);
+
+            localStream.current = await getStream(isFront);
+            setStream(localStream.current);
+            if (!localStream.current) return;
+
+            socket.emit("start-broadcast", streamId);
+
+
+            socket.on("signal", async ({ from, signal }) => {
+                console.log("Ricevuto segnale:", signal);
+                const pc = peerConnections.current[from];
+                if (!pc) {
+                    console.warn(`Connessione peer non trovata per viewer ${from}`);
+                    return;
+                }
+        
+                if (signal.candidate) {
+                    console.log(`Aggiungo ICE Candidate dal viewer ${from}`);
+                    await pc.addIceCandidate(signal);
+                } else if (signal.type === "answer") {
+                    console.log(`Ricevuta risposta SDP dal viewer ${from}`);
+                    await pc.setRemoteDescription(new RTCSessionDescription(signal));
+                }
+                    
+            });
+            
+            socket.on("join-viewer", async (viewerId) => {
+
+                const pc = new RTCPeerConnection({
+                    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+                });
+        
+                // Aggiungi il flusso del broadcaster al peer connection
+                localStream.current.getTracks().forEach((track) => pc.addTrack(track, localStream.current));
+    
+                // Invia i candidati ICE al viewer
+                pc.onicecandidate = (event) => {
+                    if (event.candidate) {
+                        console.log(`Invio ICE Candidate al viewer ${viewerId}`);
+                        socket.emit("signal", { streamId, to: viewerId, signal: event.candidate });
+                    }
+                };
+        
+                // Crea un'offerta SDP per il viewer
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                console.log(`Invio offerta SDP al viewer ${viewerId}`);
+                socket.emit("signal", { streamId, to: viewerId, signal: offer });
+    
+                // Aggiungi la connessione al registro
+                peerConnections.current[viewerId] = pc;
+                        
+            });
+            
+
+            socket.on("user-count", (count) => {
+                console.log("Utenti connessi:", count);
+                setUserCount(count-1);
+            });
+
+            socket.on("viewer-disconnect", (viewerId) => {
+                console.log(`Viewer disconnesso: ${viewerId}`);
+                const pc = peerConnections.current[viewerId];
+                if (pc) {
+                    pc.close();
+                    delete peerConnections.current[viewerId];
+                }
+            });
+
+            socket.on("error-broadcaster", () => {
+                setError("ID diretta già utilizzato");
+            });
+        
+        };
+
+        startBroadcast();
+
+        return () => {
+            socket.emit("leave-broadcast", streamId);
+            console.log("ho invocato leave broadcast");
+            Object.values(peerConnections.current).forEach((pc) => pc.close());
+        };
+    }, [streamId, navigation]);
+
+    const toggleCamera = async () => {
+        if (!stream) return;
+
+        const newIsFront = !isFront;
+        setIsFront(newIsFront);
+
+        const newStream = await getStream(newIsFront);
+        if (!newStream) return;
+
+        // Sostituisci i nuovi track nella connessione peer
+        Object.values(peerConnections.current).forEach((pc) => {
+            pc.getSenders().forEach((sender) => {
+                if (sender.track.kind === "video") {
+                    sender.replaceTrack(newStream.getVideoTracks()[0]);
+                }
+            });
+        });
+
+        localStream.current = newStream;
+        setStream(newStream);
+    };
+
+    return (
+        <View style={broadcasterStyle.container}>
+        <Text style={broadcasterStyle.title}> "In diretta"</Text>
+        <Text style={broadcasterStyle.title}>Utenti connessi: {userCount}</Text>
+    
+        {/* Se sei il broadcaster, mostra il tuo flusso locale */}
+        {stream && (
+            <RTCView streamURL={stream.toURL()} style={broadcasterStyle.video} />
+        )}
+        {!stream && (
+            <Text>Sto cercando di acquisire il flusso video...</Text>
+        )}
+    
+        {/* Pulsante per girare la fotocamera */}
+        <TouchableOpacity style={broadcasterStyle.switchButton} onPress={toggleCamera}>
+            <Text style={broadcasterStyle.buttonText}>🔄 Cambia fotocamera</Text>
+        </TouchableOpacity>
+        {/* Aggiungi log per i flussi locali e remoti */}
+        {stream && console.log("Flusso locale (broadcaster):", stream)}
+        </View>
+    );
+};
+
+
+export default BroadcasterPage;
