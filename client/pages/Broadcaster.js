@@ -42,9 +42,7 @@ const BroadcasterPage = ({ route, navigation }) => {
 
             return localStream;
         } catch (error) {
-            console.error("Errore nell'acquisizione del flusso:", error);
-            Alert.alert("Errore", "Impossibile accedere alla fotocamera.");
-            return null;
+            setError("Autorizzazione necessaria. Per continuare consenti l'accesso alla fotocamera e al microfono dalle impostazioni del dispositivo.");
         }
     };
 

@@ -8,17 +8,6 @@ export const styles = StyleSheet.create({
 });
 
 
-/*export const homestyle = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center", alignItems: "center" },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
-    input: { borderWidth: 1, borderColor: "#ccc", padding: 10, width: "80%", marginBottom: 20 },
-    modalContainer: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" },
-    modalContent: { backgroundColor: "white", padding: 20, borderRadius: 10, width: "80%" },
-    modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-    streamItem: { padding: 10, borderBottomWidth: 1, borderColor: "#ccc", alignItems: "center" },
-    streamText: { fontSize: 16 }
-});*/
-
 export const homestyle = StyleSheet.create({
     container: { flex: 1, backgroundColor: "#1E1E1E", alignItems: "center", justifyContent: "center", padding: 20},
     title: { fontSize: 28, fontWeight: "bold", color: "#fff", marginBottom: 20},

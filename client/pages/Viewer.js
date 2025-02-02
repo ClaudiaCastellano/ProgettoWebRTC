@@ -101,7 +101,7 @@ const ViewerPage = ({ route, navigation }) => {
                 
             } catch (error) {
                 console.error("Errore durante l'inizializzazione della diretta:", error);
-                Alert.alert("Errore", "Impossibile avviare la diretta. Assicurati di aver dato i permessi necessari.");
+                Alert.alert("Errore", "Assicurati di aver dato i permessi necessari.");
             }
         
         };
