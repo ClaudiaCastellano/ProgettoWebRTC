@@ -1,7 +1,7 @@
 # ProgettoWebRTC: M&LiveStreaming 📲
 ## Sommario
  
-1. [**Descrizione del Progetto**](##1-DescrizionedelProgetto)
+1. [**Descrizione del Progetto**](#1-descrizione-del-progetto)
 2. **Tecnologie Utilizzate**
 3. **Setup del Progetto**
 4. **Struttura del Progetto**
