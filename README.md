@@ -10,7 +10,7 @@
     - `Home.js`
     - `Broadcaster.js`
     - `Viewer.js`
-    - 'server.js'
+    - `server.js`
 6. **Dettagli di Implementazione**
     - WebRTC
     - Socket.io
