@@ -7,14 +7,19 @@ import ViewerPage from "./pages/Viewer";
 
 function App() {
   
+// Creazione dello stack di navigazione
 const Stack = createStackNavigator();
+
   return (
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Viewer" component={ViewerPage} />
-        <Stack.Screen name="Broadcast" component={BroadcasterPage} />
+      <Stack.Navigator initialRouteName="Home"> 
+        <Stack.Screen name="Home" component={Home} options={{ 
+          headerLeft: () => null, // Rimuove il pulsante "Back"
+          gestureEnabled: false // Disabilita il gesto di swipe-back su iOS
+        }}/>
+        <Stack.Screen name="Viewer" component={ViewerPage} /> 
+        <Stack.Screen name="Broadcast" component={BroadcasterPage} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
