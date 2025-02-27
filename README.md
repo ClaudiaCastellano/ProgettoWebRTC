@@ -11,12 +11,9 @@
     - `Broadcaster.js`
     - `Viewer.js`
     - `server.js`
-6. **Dettagli di Implementazione**
-    - WebRTC
-    - Socket.io
-    - Gestione degli Stream
-7. **Funzionamento Generale**
-8. **Considerazioni Finali**
+
+6. [**Schema di Funzionamento**](#6-schema-di-funzionamento)
+
 
 ---
  
@@ -209,6 +206,57 @@ La struttura principale del progetto include:
 - **Funzioni principali**:
   - `startViewer()`: Si connette alla trasmissione, riceve i flussi dal broadcaster e gestisce gli eventi trasmessi dal server di segnalazione.
   - `ontrack`: Aggiunge il flusso remoto alla lista di `remoteStreams` quando il flusso viene ricevuto.
- 
----
 
+ ### `server.js`
+
+- **Gestione delle dirette live**:
+
+   - Mantiene un elenco di tutte le dirette attive (`liveStreams`), associando un ID di diretta a un oggetto che contiene l'ID del broadcaster e gli ID dei viewer connessi.
+
+   - Gestisce l'avvio e la fine delle dirette, assicurandosi che solo un broadcaster possa avviare una diretta e che i viewer possano connettersi a una diretta esistente.
+ 
+- **Gestione delle connessioni tramite WebSocket**:
+
+   - Quando un utente si connette, il server stabilisce una connessione WebSocket tramite **Socket.IO**.
+
+   - Ogni connessione può inviare e ricevere eventi per partecipare alla diretta, inviare segnali per la connessione peer-to-peer (come offerte, risposte e candidati ICE) e ricevere notifiche in tempo reale.
+
+- **Funzioni principali del server**:
+
+   - **Avvio di una diretta (`start-broadcast`)**: Il broadcaster invia un evento con l'ID della diretta. Se la diretta non esiste, il server crea una nuova sessione di streaming e aggiunge il broadcaster.
+
+   - **Partecipazione di un viewer (`join-broadcast`)**: I viewer inviano l'ID della diretta a cui vogliono unirsi. Se la diretta esiste, vengono aggiunti alla sessione e viene notificato a tutti gli utenti connessi il numero aggiornato di partecipanti.
+
+   - **Invio di segnali**: Quando il broadcaster o un viewer invia segnali (per esempio, per l'avvio di una connessione peer-to-peer), il server inoltra questi segnali ai destinatari (broadcaster o viewer).
+
+   - **Disconnessione di un utente (`disconnect`)**: Quando un utente si disconnette, il server gestisce la sua uscita dalla diretta, rimuovendolo dalla lista dei partecipanti e notificando gli altri utenti.
+
+   - **Uscita volontaria da una diretta (`leave-broadcast`)**: Gli utenti (sia broadcaster che viewer) possono lasciare volontariamente una diretta. In questo caso, il server aggiorna la lista dei partecipanti e invia le notifiche appropriate.
+ 
+- **Gestione degli eventi Socket.IO**:
+
+   - **`get-streams`**: Restituisce la lista delle dirette attive quando richiesto da un client.
+
+   - **`start-broadcast`**: Permette a un broadcaster di avviare una nuova diretta.
+
+   - **`join-broadcast`**: Permette a un viewer di unirsi a una diretta.
+
+   - **`signal`**: Inoltra segnali tra broadcaster e viewer per stabilire una connessione peer-to-peer.
+
+   - **`disconnect`**: Gestisce la disconnessione degli utenti e la loro uscita dalle dirette.
+
+   - **`leave-broadcast`**: Permette a un utente di uscire manualmente da una diretta.
+ 
+- **Gestione delle notifiche**:
+
+   - **`user-count`**: Notifica a tutti i partecipanti il numero aggiornato di utenti connessi a una diretta.
+
+   - **`viewer-disconnect`**: Notifica a tutti i partecipanti quando un viewer si disconnette.
+
+   - **`broadcast-ended`**: Notifica a tutti i viewer quando una diretta è terminata dal broadcaster.
+
+ ---
+
+ ## 6. Schema di Funzionamento
+ 
+ 
