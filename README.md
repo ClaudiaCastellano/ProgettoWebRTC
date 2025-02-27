@@ -77,6 +77,8 @@ yarn install
 Questo comando installerà tutte le dipendenze elencate nel file `package.json`.
  
 ### 4. **Configurare il Progetto per Android e iOS**
+
+Modifica l'indirizzo IP del server di segnalazione nel file `/client/pages/signaling.js`.
  
 Per avviare l'applicazione su un dispositivo o emulatore Android o iOS, è necessario avere correttamente configurato il proprio ambiente di sviluppo. Ecco i passaggi:
  
