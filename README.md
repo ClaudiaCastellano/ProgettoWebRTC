@@ -260,3 +260,4 @@ La struttura principale del progetto include:
  ## 6. Schema di Funzionamento
  
  
+![diagrammaFunzionamento](https://github.com/user-attachments/assets/1b6ef123-eb20-41c0-806c-f46e985177b0)
