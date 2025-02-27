@@ -1,20 +1,21 @@
 # ProgettoWebRTC: M&LiveStreaming 📲
 ## Sommario
  
-1. **Descrizione del Progetto**
+1. [**Descrizione del Progetto**](#1-DescrizionedelProgetto)
 2. **Tecnologie Utilizzate**
-3. **Struttura del Progetto**
-4. **Descrizione dei Componenti**
+3. **Setup del Progetto**
+4. **Struttura del Progetto**
+5. **Descrizione dei Componenti**
     - `App.js`
     - `Home.js`
     - `Broadcaster.js`
     - `Viewer.js`
-5. **Dettagli di Implementazione**
+6. **Dettagli di Implementazione**
     - WebRTC
     - Socket.io
     - Gestione degli Stream
-6. **Funzionamento Generale**
-7. **Considerazioni Finali**
+7. **Funzionamento Generale**
+8. **Considerazioni Finali**
 
 ---
  
@@ -43,10 +44,8 @@ Dopo aver scaricato il progetto dal repository GitHub, è necessario seguire que
 Per prima cosa, assicurati di avere **Git** installato sul tuo sistema. Se non hai ancora clonato il progetto, esegui il comando seguente per ottenere una copia del repository:
  
 ```bash
-git clone https://github.com/username/repository-name.git
+git clone https://github.com/ClaudiaCastellano/ProgettoWebRTC.git
 ```
- 
-Sostituisci `https://github.com/username/repository-name.git` con l'URL effettivo del tuo repository GitHub.
  
 ### 2. **Installare Node.js**
  
@@ -64,10 +63,10 @@ Assicurati che la versione sia almeno la 18.x.x, come specificato nel file `pack
  
 Accedi alla cartella del progetto e installa le dipendenze necessarie utilizzando **npm** o **yarn**.
  
-Esegui il comando nella directory principale del progetto:
+Esegui il comando nella directory **client** del progetto:
  
 ```bash
-cd nome-del-progetto
+cd client
 npm install
 ```
  
@@ -102,7 +101,7 @@ sudo gem install cocoapods
 Il server di **Metro** è un server di bundling per React Native che gestisce il caricamento del codice JavaScript durante lo sviluppo. Avvia il server di Metro con il comando:
  
 ```bash
-npm start
+npx react-native start
 ```
  
 Questo avvierà il bundler in modalità di sviluppo. Lascia aperto questo terminale, poiché dovrai mantenere il server in esecuzione.
@@ -114,7 +113,7 @@ Questo avvierà il bundler in modalità di sviluppo. Lascia aperto questo termin
 Se hai un dispositivo Android collegato o un emulatore in esecuzione, puoi eseguire l'app con il comando:
  
 ```bash
-npm run android
+npx react-native run-android
 ```
  
 Questo avvierà l'app sul dispositivo o sull'emulatore Android.
@@ -124,61 +123,12 @@ Questo avvierà l'app sul dispositivo o sull'emulatore Android.
 Se stai lavorando su macOS e hai Xcode configurato correttamente, puoi eseguire l'app su un dispositivo iOS o su un simulatore iOS con il comando:
  
 ```bash
-npm run ios
+npx react-native run-ios
 ```
  
 Questo avvierà l'app sul simulatore iOS o sul dispositivo fisico (se configurato).
  
-### 7. **Testare il Progetto**
- 
-Una volta avviato l'ambiente di sviluppo e l'app, puoi testare il funzionamento dell'applicazione. Per eseguire i test unitari e le verifiche, esegui:
- 
-```bash
-npm test
-```
- 
-Questo comando avvierà **Jest**, il framework di test configurato nel progetto.
- 
-### 8. **Configurazioni Aggiuntive**
- 
-Se stai configurando un ambiente di produzione o se hai bisogno di configurazioni aggiuntive per il progetto (ad esempio, un server di back-end per la gestione dei segnali tramite Socket.IO), assicurati di seguire le istruzioni fornite nel repository specifico per la configurazione di queste parti.
- 
 ---
- 
-## 9. Risoluzione dei Problemi Comuni
- 
-Se dovessi riscontrare errori durante il setup, ecco alcune soluzioni comuni:
- 
-1. **Problema con le dipendenze**:
-   Se alcuni pacchetti non si installano correttamente, prova a cancellare la cartella `node_modules` e il file `package-lock.json`, quindi reinstalla le dipendenze:
- 
-   ```bash
-   rm -rf node_modules
-   rm package-lock.json
-   npm install
-   ```
- 
-2. **Errore in Android**:
-   Se hai problemi a eseguire l'app su Android, verifica che il tuo ambiente Android sia configurato correttamente e che tu stia utilizzando una versione di **Gradle** compatibile con il progetto. Se necessario, esegui `gradlew clean` nella cartella `android` per pulire e ricostruire il progetto.
- 
-3. **Errore in iOS**:
-   Se hai problemi a eseguire l'app su iOS, prova a fare una pulizia del progetto iOS:
- 
-   ```bash
-   cd ios
-   pod install
-   cd ..
-   ```
- 
-   Questo aggiornerà le dipendenze di CocoaPods.
- 
----
-
-# Setup 💻
-
-## Step 1️⃣
-
-## Step 2️⃣
 
 
 # Componenti sistema
