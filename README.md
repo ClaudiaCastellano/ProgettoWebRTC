@@ -2,14 +2,15 @@
 ## Sommario
  
 1. [**Descrizione del Progetto**](#1-descrizione-del-progetto)
-2. **Tecnologie Utilizzate**
-3. **Setup del Progetto**
-4. **Struttura del Progetto**
-5. **Descrizione dei Componenti**
+2. [**Tecnologie Utilizzate**](#2-tecnologie-utilizzate)
+3. [**Setup del Progetto**](#3-setup-del-progetto)
+4. [**Struttura del Progetto**](#4-struttura-del-progetto)
+5. [**Descrizione dei Componenti**](#5-descrizione-dei-componenti)
     - `App.js`
     - `Home.js`
     - `Broadcaster.js`
     - `Viewer.js`
+    - 'server.js'
 6. **Dettagli di Implementazione**
     - WebRTC
     - Socket.io
@@ -128,8 +129,86 @@ npx react-native run-ios
  
 Questo avvierà l'app sul simulatore iOS o sul dispositivo fisico (se configurato).
  
+## 4. Struttura del Progetto
+ 
+La struttura principale del progetto include:
+ 
+```
+/ProgettoWebRTC
+  /client
+    /android
+    /ios
+    /pages
+      Broadcaster.js
+      Home.js
+      Viewer.js
+      styles.js
+      signaling.js
+    App.js
+    package.json
+  /server
+    server.js
+    package.json
+```
+ 
+- **App.js**: Definisce la navigazione dell'applicazione.
+- **Home.js**: La schermata principale dove l'utente può scegliere di unirsi a una trasmissione o avviare una nuova diretta.
+- **Broadcaster.js**: Schermata per l'utente che trasmette il video (broadcaster).
+- **Viewer.js**: Schermata per l'utente che guarda la diretta.
+- **serves.js**: Server per lo scambio di informazioni di segnalazione.
+ 
 ---
 
-
-# Componenti sistema
+## 5. Descrizione dei Componenti
+ 
+### `App.js`
+ 
+- **Funzione**: Gestisce la navigazione tra le schermate dell'applicazione.
+- **StackNavigator**: Imposta il flusso di navigazione, permettendo agli utenti di spostarsi tra la schermata Home, il Broadcaster e il Viewer.
+- **Schermate**:
+  - **Home**: Schermata iniziale che offre la possibilità di avviare o partecipare a una trasmissione.
+  - **Broadcaster**: Schermata per la gestione del flusso video da parte di un broadcaster.
+  - **Viewer**: Schermata per i viewer che guardano la diretta.
+ 
+### `Home.js`
+ 
+- **Funzione**: La schermata principale in cui l'utente può scegliere se unirsi a una diretta esistente o avviarne una nuova.
+- **Stato**:
+  - `streamId`: ID per l'identificazione delle dirette.
+  - `availableStreams`: Elenco delle dirette disponibili a cui l'utente può unirsi.
+  - `modalVisible`: Controlla la visibilità della finestra modale che mostra le dirette disponibili.
+  - `showInput`: Determina se mostrare il campo di input per l'ID diretta.
+- **Funzioni principali**:
+  - `fetchAvailableStreams()`: Richiede la lista delle dirette disponibili al server tramite Socket.IO.
+  - `joinStream()`: Permette di unirsi alla diretta selezionata.
+  - `startBroadcast()`: Avvia una nuova diretta se è stato fornito un `streamId`.
+ 
+### `Broadcaster.js`
+ 
+- **Funzione**: Gestisce la trasmissione video dal broadcaster.
+- **Stato**:
+  - `stream`: Rappresenta lo stream video locale del broadcaster.
+  - `error`: Gestisce eventuali errori che si verificano durante la trasmissione.
+  - `userCount`: Numero di utenti connessi alla trasmissione.
+  - `errorShown`: Consente di verificare se l'errore è stato già visualizzato.
+  - `isFront`: Permette di gestire la fotocamera.
+ 
+- **Funzioni principali**:
+  - `getStream()`: Ottiene il flusso video e audio dal dispositivo dell'utente.
+  - `startBroadcast()`: Inizializza la trasmissione e gestisce gli eventi trasmessi dal server di segnalazione.
+  - `toggleCamera()`: Permette di cambiare tra la fotocamera frontale e quella posteriore.
+ 
+### `Viewer.js`
+ 
+- **Funzione**: Gestisce la visualizzazione di una diretta da parte dei viewer.
+- **Stato**:
+  - `remoteStreams`: Elenco dei flussi remoti ricevuti dal broadcaster.
+  - `userCount`: Numero di utenti connessi alla diretta.
+  - `error`: Gestisce gli errori durante la visualizzazione.
+  - `errorShown`: Consente di verificare se l'errore è stato già visualizzato.
+- **Funzioni principali**:
+  - `startViewer()`: Si connette alla trasmissione, riceve i flussi dal broadcaster e gestisce gli eventi trasmessi dal server di segnalazione.
+  - `ontrack`: Aggiunge il flusso remoto alla lista di `remoteStreams` quando il flusso viene ricevuto.
+ 
+---
 
