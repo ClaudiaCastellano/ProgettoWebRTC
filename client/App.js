@@ -13,8 +13,8 @@ const Stack = createStackNavigator();
   return (
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home"> 
-        <Stack.Screen name="Home" component={Home} options={{ 
+      <Stack.Navigator initialRouteName="M&LiveStreaming"> 
+        <Stack.Screen name="M&LiveStreaming" component={Home} options={{ 
           headerLeft: () => null, // Rimuove il pulsante "Back"
           gestureEnabled: false // Disabilita il gesto di swipe-back su iOS
         }}/>

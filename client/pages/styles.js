@@ -21,6 +21,8 @@ export const homestyle = StyleSheet.create({
     modalTitle: { fontSize: 20, fontWeight: "bold", color: "#fff", marginBottom: 15},
     streamItem: { backgroundColor: "#03DAC5", padding: 8, borderRadius: 10, marginVertical: 5, width: "250", alignItems: "center"},
     streamText: { color: "#fff", fontSize: 16},
+    backgroundImage: { flex: 1, resizeMode: 'cover', width: '100%', height: '100%',},
+    overlay: {flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'center',alignItems: 'center',padding: 20,},
   });
 
 export const broadcasterStyle = StyleSheet.create({
